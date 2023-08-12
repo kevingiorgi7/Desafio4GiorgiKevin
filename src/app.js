@@ -6,6 +6,9 @@ import viewsRouter from './routes/views.router.js'
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 
+import ProductManager from './ProductManager.js';
+const manager = new ProductManager("Products.json");
+
 import { Server } from 'socket.io'
 
 
@@ -34,10 +37,20 @@ const httpServer = app.listen(PORT,()=>{
 
 const socketServer = new Server(httpServer)
 
+
+
 socketServer.on('connection',socket=>{
     console.log(`Usuario conectado: ${socket.id}`);
-
     socket.on('disconnect',()=>{
         console.log(`Usuario desconectado: ${socket.id}`);
     })
-})
+    socket.on('addProduct', (newProduct) => {
+        const addedProduct = manager.addProducts(newProduct);
+        socketServer.emit('addProduct', addedProduct); 
+    });
+    socket.on('deleteProduct', (productId) => {
+        manager.deleteProduct(Number(productId));
+        socketServer.emit('productDeleted', productId); 
+        socketServer.emit('updateProductList'); 
+    });
+}) 

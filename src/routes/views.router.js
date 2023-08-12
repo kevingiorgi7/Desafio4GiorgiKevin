@@ -5,15 +5,24 @@ const manager = new ProductManager("Products.json");
 
 const router = Router()
 
-const products = await manager.getProducts()
-
-
-router.get('/',(req,res)=>{
-    res.render('home',{products: products})
+router.get('/', async (req,res)=>{
+    try {
+        const products = await manager.getProducts()
+        res.render('home',{products: products})
+    } catch (error) {
+        throw res.status(500).json({ error }) 
+    }
+    
 })
 
-router.get('/realtimeproducts',(req,res)=>{
-    res.render('home',{products: products})
+router.get('/realtimeproducts', async (req,res)=>{
+    try {
+        const products = await manager.getProducts()
+        res.render('realTimeProducts',{products: products})
+    } catch (error) {
+        throw res.status(500).json({ error }) 
+    }
+    
 })
 
 
