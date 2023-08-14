@@ -3,10 +3,11 @@
     <div id="productsList">
     {{#each products}}
         <li data-product-id="{{this.id}}">
-            <strong>{{this.title}}:</strong> {{this.description}}
+            ID:{{this.id}} - <strong>{{this.title}}:</strong> {{this.description}}
         </li>
     {{/each}}
     </div>
+    <br>
     <div>
         <h2>Agregar Producto:</h2>
         <form id="addProductForm">

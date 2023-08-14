@@ -37,20 +37,28 @@ const httpServer = app.listen(PORT,()=>{
 
 const socketServer = new Server(httpServer)
 
+const products = await manager.getProducts()
 
-
-socketServer.on('connection',socket=>{
+socketServer.on('connection', async socket=>{
     console.log(`Usuario conectado: ${socket.id}`);
     socket.on('disconnect',()=>{
         console.log(`Usuario desconectado: ${socket.id}`);
     })
-    socket.on('addProduct', (newProduct) => {
-        const addedProduct = manager.addProducts(newProduct);
-        socketServer.emit('addProduct', addedProduct); 
+    socket.on('addProduct', async (newProduct) => {
+        const productAdded = await manager.addProducts(newProduct);
+        socketServer.emit('productAdded', productAdded);
     });
-    socket.on('deleteProduct', (productId) => {
-        manager.deleteProduct(Number(productId));
-        socketServer.emit('productDeleted', productId); 
-        socketServer.emit('updateProductList'); 
+    socket.on('deleteProduct', async (productId) => {
+        const productDeleted = await manager.deleteProduct(Number(productId));
+        socketServer.emit('productDeleted', productDeleted)
+
+        const productsUpdated = await manager.getProducts()
+        console.log(productsUpdated);
+        socketServer.emit('productDeleted', productsUpdated => {
+            products = productsUpdated
+        }); 
+/*         socketServer.emit('productsUpdated', productsUpdated =>{
+            const products = productsUpdated
+        }) */
     });
 }) 

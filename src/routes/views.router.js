@@ -5,6 +5,7 @@ const manager = new ProductManager("Products.json");
 
 const router = Router()
 
+
 router.get('/', async (req,res)=>{
     try {
         const products = await manager.getProducts()
@@ -24,6 +25,8 @@ router.get('/realtimeproducts', async (req,res)=>{
     }
     
 })
+
+
 
 
 export default router

@@ -10,6 +10,9 @@ const formAdd = document.getElementById('addProductForm')
 const formDel = document.getElementById('deleteProductForm')
 const idDelete = document.getElementById('productId')
 
+/* import ProductManager from "../ProductManager.js";
+const manager = new ProductManager("Products.json"); */
+
 
 formAdd.onsubmit = (e) => {
     e.preventDefault()
@@ -26,11 +29,13 @@ formAdd.onsubmit = (e) => {
     formAdd.reset();
 }
 
-socketClient.on('addProduct', (newProduct) => {
+socketClient.on('productAdded', async (productAdded) => {
     const productList = document.getElementById('productsList');
     const newItem = document.createElement('li');
-    newItem.innerHTML = `<strong>${newProduct.title}:</strong> ${newProduct.description}`;
+    newItem.innerHTML = `ID:${productAdded.id} - <strong>${productAdded.title}:</strong> ${productAdded.description}`;
     productList.appendChild(newItem);
+/*     const products = await manager.getProducts()
+    socketServer.emit('products', products) */
 });
 
 
@@ -41,10 +46,19 @@ formDel.onsubmit = (e) => {
     formDel.reset();
 }
 
-socketClient.on('productDeleted', (productId) => {
+socketClient.on('productDeleted', (productDeleted) => {
     const productList = document.getElementById('productsList');
-    const productItem = productList.querySelector(`li[data-product-id="${productId}"]`);
+    const productItem = productList.querySelector(`li[data-product-id="${productDeleted.id}"]`);
     if (productItem) {
         productList.removeChild(productItem);
     }
 });
+
+/* socketClient.on('productsUpdated', productsUpdated => {
+    const productList = document.getElementById('productsList');
+    productsUpdated.map(p => {
+        const newItem = document.createElement('li');
+        newItem.innerHTML = `ID:${p.id} - <strong>${p.title}:</strong> ${p.description}`;
+        productList.appendChild(newItem)})
+});
+ */
